@@ -1,8 +1,9 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def visualiser_graph(graph):
+def visualiser_graph(graph, title : str = ""):
     nx.draw(graph, with_labels=True)
+    plt.title(title)
     plt.show()
 
 # Création d'un graph "G"
@@ -225,7 +226,61 @@ for n, nbrs in MG.adjacency():
        minvalue = min([d['weight'] for d in edict.values()])
        GG.add_edge(n, nbr, weight = minvalue)
 
-visualiser_graph(GG)
+# visualiser_graph(GG)
 
 # Chemin le plus court entre deux noeuds
 print(nx.shortest_path(GG, 1, 3))
+
+######################################
+# Génération de graphs et opérations #
+######################################
+
+# Application d'opérations classiques sur les graphs
+
+"""
+subgraph(G, nbunch) : Returns the subgraph induced on nodes in nbunch.
+union(G, H[, rename]) : Combine graphs G and H.
+disjoint_union(G, H) : Combine graphs G and H.
+cartesian_product(G, H) : Returns the Cartesian product of G and H.
+compose(G, H) : Compose graph G with H by combining nodes and edges into a single graph.
+complement(G) : Returns the graph complement of G.
+create_empty_copy(G[, with_data]) : Returns a copy of the graph G with all of the edges removed.
+to_undirected(graph) : Returns an undirected view of the graph graph.
+to_directed(graph) : Returns a directed view of the graph graph.
+"""
+
+# Utilisation d'un appel à l'un des petits graphiques classiques
+
+PG = nx.petersen_graph()
+# visualiser_graph(PG, title="Petersen Graph")
+
+TG = nx.tutte_graph()
+# visualiser_graph(TG, title="Tutte Graph")
+
+SMG = nx.sedgewick_maze_graph()
+# visualiser_graph(SMG, title="Sedgewick Maze Graph")
+
+THG = nx.tetrahedral_graph()
+# visualiser_graph(THG, title="Tetrahedral Graph")
+
+# Utilisation d'un générateur (constructif) pour un graphe classique
+
+K_5 = nx.complete_graph(5) # Tous les noeuds sont repliés
+K_3_5 = nx.complete_bipartite_graph(3, 5) # 3 noeuds sont connéctés aux 5 autres
+barbell = nx.barbell_graph(10, 10) # 2 complete graph reliés par un chemin
+lollipop = nx.lollipop_graph(10, 20)
+
+# Utilisation d'un générateur de graph stochastique
+
+er = nx.erdos_renyi_graph(100, 0.15) # Erdős-Rényi graph or a binomial graph.
+ws = nx.watts_strogatz_graph(30, 3, 0.1) # Returns a Watts–Strogatz small-world graph.
+ba = nx.barabasi_albert_graph(100, 5) # Returns a random graph using Barabási–Albert preferential attachment
+red = nx.random_lobster_graph(10, 0.7, 0.9) # Returns a random lobster graph.
+
+# Enregistrer et lire un graph dans un fichier
+# nx.write_gml(red, "maps/random_lobster_graph.gml")
+# mygraph = nx.read_gml("maps/random_lobster_graph.gml")
+
+# visualiser_graph(mygraph)
+
+# Analyse de graphs
