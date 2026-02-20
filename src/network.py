@@ -1,9 +1,13 @@
+###############################################################
+# Script d'exploration et découverte de la librairie NetworkX #
+###############################################################
+
 import networkx as nx
 import matplotlib.pyplot as plt
 
 def visualiser_graph(graph, title : str = ""):
-    nx.draw(graph, with_labels=True)
     plt.title(title)
+    nx.draw(graph, with_labels=True)
     plt.show()
 
 # Création d'un graph "G"
@@ -252,7 +256,7 @@ to_directed(graph) : Returns a directed view of the graph graph.
 # Utilisation d'un appel à l'un des petits graphiques classiques
 
 PG = nx.petersen_graph()
-# visualiser_graph(PG, title="Petersen Graph")
+visualiser_graph(PG, title="Petersen Graph")
 
 TG = nx.tutte_graph()
 # visualiser_graph(TG, title="Tutte Graph")
@@ -283,4 +287,75 @@ red = nx.random_lobster_graph(10, 0.7, 0.9) # Returns a random lobster graph.
 
 # visualiser_graph(mygraph)
 
-# Analyse de graphs
+#####################
+# Analyse de graphs #
+#####################
+
+print("\nAnalyse de graph")
+
+G = nx.Graph()
+G.add_edges_from([(1,2), (1,3)])
+G.add_node("spam")
+print(list(nx.connected_components(G)))
+
+print(sorted(d for n,d in G.degree()))
+
+print(nx.clustering(G))
+
+sp = dict(nx.all_pairs_shortest_path(G))
+print(sp[3])
+
+############################################################
+# Considérations relatives aux nombres à virgule flottante #
+############################################################
+
+tiny = 5e-17
+
+G = nx.DiGraph()
+G.add_edge('A', 'B', weight=0.1)
+G.add_edge('B', 'C', weight=0.1)
+G.add_edge('C', 'D', weight=0.1)
+G.add_edge('A', 'D', weight=0.3 + tiny)
+
+path = nx.shortest_path(G, source='A', target='D', weight='weight')
+print(path)
+
+for precision in [16, 17]:
+    path = nx.shortest_path(
+        G,
+        source='A',
+        target='D',
+        weight=lambda u, v, d: int(d['weight'] * 10 ** precision)
+    )
+    print(f"With {precision} precision digits, path is {path}")
+
+#########################
+# Visualiser les graphs #
+#########################
+
+G = nx.petersen_graph()
+subax1 = plt.subplot(121)
+nx.draw(G, with_labels=True, font_weight='bold')
+subax2 = plt.subplot(122)
+nx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
+plt.show()
+
+options = {
+    'node_color': 'black',
+    'node_size': 100,
+    'width': 3,
+}
+subax1 = plt.subplot(221)
+nx.draw_random(G, **options)
+subax2 = plt.subplot(222)
+nx.draw_circular(G, **options)
+subax3 = plt.subplot(223)
+nx.draw_spectral(G, **options)
+subax4 = plt.subplot(224)
+nx.draw_shell(G, nlist=[range(5,10), range(5)], **options)
+plt.show()
+
+G = nx.dodecahedral_graph()
+shells = [[2, 3, 4, 5, 6], [8, 1, 0, 19, 18, 17, 16, 15, 14, 7], [9, 10, 11, 12, 13]]
+nx.draw_shell(G, nlist=shells, **options)
+plt.show()
